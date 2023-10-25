@@ -14,7 +14,7 @@ function createFeatures(earthquakeData) {
     popupContent += `<p>Date: ${new Date(feature.properties.time)}</p>`;
     popupContent += `<p>Magnitude: ${feature.properties.mag}</p>`;
     popupContent += `<p>Depth: ${feature.geometry.coordinates[2]}</p>`;
-
+    
     // Bind the popup content to the layer.
     layer.bindPopup(popupContent);
   }
@@ -22,7 +22,7 @@ function createFeatures(earthquakeData) {
   let earthquakes = L.geoJSON(earthquakeData, {
     onEachFeature: onEachFeature,
     pointToLayer: function (feature, latlng) {
-      return L.circleMarker(latlng, {
+      return L.circle(latlng, {
         radius: calculateRadius(feature.properties.mag),
         fillColor: getColor(feature.geometry.coordinates[2]),
         color: "#000",
@@ -73,24 +73,6 @@ function createMap(earthquakes) {
   L.control.layers(baseMaps, overlayMaps, {
     collapsed: false
   }).addTo(myMap);
-
-  let legend = L.control({ position: "bottomright" })
-
-  legend.onAdd = () => {
-    let div = L.DomUtil.create("div", "legend");
-    div.innerHTML = `
-    <div>-10 -10</div>
-    <div>10 - 30</div>
-    <div>30 - 50</div>
-    <div>50 - 70</div>
-    <div>70 - 90</div>
-    <div> 90 +</div>
-  `
-
-    return div;
-  }
-
-  legend.addTo(myMap)
 }
 
 function calculateRadius(magnitude) {
@@ -104,4 +86,3 @@ function getColor(depth) {
   else if (depth < 30) return "#ffff00"; // Yellow for moderate depth
   else return "#ff0000"; // Red for deep earthquakes
 }
-
